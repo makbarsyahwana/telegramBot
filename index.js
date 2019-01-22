@@ -1,5 +1,16 @@
 import telegramBot from 'node-telegram-bot-api'
-import firebase from 'firebase'
-import OGS from 'open-graph-scraper'
+import responseMessage from './dialogFlowResponse'
 
-const bot = new telegramBot()
+const telegramToken = process.env.API_TELEGRAM_TOKEN
+
+const bot = new telegramBot(telegramToken, {
+  polling: true
+})
+
+bot.on('message', (msg) => {
+  responseMessage(msg.text.toString(), (res, err) => {
+    if (!err) {
+      bot.sendMessage(msg.chat.id, res)
+    }
+  })
+})
